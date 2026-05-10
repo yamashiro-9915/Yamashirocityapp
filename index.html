@@ -14,7 +14,7 @@
            お知らせ編集エリア（ここを書き換えてください）
            ========================================= */
         :root {
-            --news-content: "山城市コンテンツ拡大！（公式アプリ・Yamashiro music）";
+            --news-content: "山城市の新しいWebアプリが公開されました！";
             --last-updated: "2026/05/10 19:00";
             --app-version: "1.02";
         }
@@ -380,8 +380,7 @@
             const isiOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
             const text = document.getElementById('instruction-detail');
             if (isiOS) {
-                text.innerHTML = "Safariの右下にある・・・をクリック。共有をクリック。右下にある『もっと表示』をクリック。下の方にあるホーム画面に追加をクリック。
-";
+                text.innerHTML = "Safariの「共有ボタン（↑）」を押し、<br><strong>『ホーム画面に追加』</strong>を選択してください。";
             } else {
                 text.innerHTML = "Chromeのメニュー（︙）を押し、<br><strong>『アプリをインストール』</strong>を選択してください。";
             }
