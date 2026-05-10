@@ -9,47 +9,38 @@
 <link rel="icon" href="icon-192.png">
 
 <style>
-/* ===== 基本 ===== */
+/* ========= 共通 ========= */
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display";
-  background:#f2f5fa;
+  background:#f2f4f8;
   color:#111;
-}
-body.dark{
-  background:#0c0c0e;
-  color:#fff;
 }
 .hidden{display:none}
 
-/* ===== PC非対応 ===== */
-@media (min-width:768px){
-  body *{display:none}
-  body::before{
-    content:"このアプリはスマートフォン専用です";
-    display:flex;
-    height:100vh;
-    align-items:center;
-    justify-content:center;
-    font-size:18px;
-  }
+/* ========= ブラウザ遮断 ========= */
+#block{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:24px;
+  background:#fff;
+}
+#block h2{
+  font-size:22px;
+}
+#block p{
+  color:#555;
+  margin-top:12px;
 }
 
-/* ===== ガラスカード ===== */
-.card{
-  background:rgba(255,255,255,0.7);
-  backdrop-filter:blur(18px);
-  border-radius:20px;
-  padding:16px;
-  margin-bottom:16px;
-}
-body.dark .card{
-  background:rgba(30,30,30,0.7);
-}
-
-/* ===== スプラッシュ ===== */
+/* ========= スプラッシュ ========= */
 #splash{
-  position:fixed;inset:0;
+  position:fixed;
+  inset:0;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -58,7 +49,7 @@ body.dark .card{
 }
 #splash h1{
   font-size:42px;
-  background:linear-gradient(90deg,#007aff,#5ac8fa);
+  background:linear-gradient(90deg,#007aff,#4aa3ff);
   -webkit-background-clip:text;
   color:transparent;
   animation:zoom 1.8s ease forwards;
@@ -68,85 +59,117 @@ body.dark .card{
   to{transform:scale(1.6);opacity:1}
 }
 
-/* ===== メイン ===== */
+/* ========= メイン ========= */
 main{
-  padding:16px 16px 100px;
+  padding:20px 16px 120px;
 }
 .tab{display:none}
 .tab.active{display:block}
 
-/* ===== タブバー ===== */
-nav{
-  position:fixed;
-  bottom:0;left:0;right:0;
-  height:80px;
-  background:rgba(255,255,255,0.8);
-  backdrop-filter:blur(20px);
-  display:flex;
-  border-top:1px solid rgba(0,0,0,0.1);
-}
-body.dark nav{
-  background:rgba(20,20,20,0.8);
-}
-nav button{
-  flex:1;
-  border:none;
-  background:none;
-  font-size:11px;
-  color:#666;
-}
-nav button.active{
-  color:#007aff;
-  font-weight:600;
+/* ========= カード ========= */
+.card{
+  background:rgba(255,255,255,0.85);
+  border-radius:20px;
+  padding:18px;
+  margin-bottom:18px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
 }
 
-/* ===== UI ===== */
-h2{margin:0 0 8px}
+/* ========= ホーム ========= */
+.hero{
+  padding:28px 18px;
+  border-radius:24px;
+  background:linear-gradient(135deg,#007aff,#5ac8fa);
+  color:#fff;
+  margin-bottom:22px;
+}
+.hero h2{
+  margin:0;
+  font-size:26px;
+}
 .time{
-  font-size:28px;
+  font-size:34px;
   font-weight:600;
+  margin-top:10px;
 }
-input{
+
+/* ========= ボタン ========= */
+.main-btn{
   width:100%;
-  padding:14px;
-  border-radius:14px;
-  border:none;
-  background:#e9ecf1;
-  font-size:16px;
-}
-button.main{
-  width:100%;
-  padding:14px;
-  border-radius:16px;
+  padding:16px;
+  border-radius:18px;
   border:none;
   background:#007aff;
   color:#fff;
   font-size:16px;
 }
-.toggle{
+
+/* ========= タブバー（ANA風） ========= */
+nav{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  height:92px;
+  background:rgba(255,255,255,0.9);
+  backdrop-filter:blur(20px);
   display:flex;
-  justify-content:space-between;
+  box-shadow:0 -4px 12px rgba(0,0,0,0.08);
+}
+nav button{
+  flex:1;
+  background:none;
+  border:none;
+  font-size:11px;
+  color:#666;
+  display:flex;
+  flex-direction:column;
   align-items:center;
-  margin:12px 0;
+  justify-content:center;
+  gap:4px;
+}
+nav button.active{
+  color:#007aff;
+  font-weight:600;
+}
+nav button.active span{
+  transform:translateY(-4px);
+}
+
+/* ========= iframe ========= */
+iframe{
+  width:100%;
+  height:70vh;
+  border:none;
+  border-radius:20px;
 }
 </style>
 </head>
 
 <body>
 
+<!-- ❌ ブラウザ用ブロック画面 -->
+<div id="block" class="hidden">
+  <div>
+    <h2>このアプリは<br>インストール後にご利用ください</h2>
+    <p>
+      iPhone：共有 → ホーム画面に追加<br>
+      Android：︙ → アプリをインストール
+    </p>
+  </div>
+</div>
+
+<!-- スプラッシュ -->
 <div id="splash"><h1>山城市</h1></div>
 
 <main id="app" class="hidden">
 
-<!-- 🔔 編集しやすいお知らせ -->
 <script>
-const NEWS_TEXT="山城市公式アプリ ベータ版を公開しました。";
+const NEWS_TEXT="山城市公式アプリ β版を公開しました。";
 const NEWS_UPDATED="2026-05-10 12:00";
 </script>
 
 <section id="home" class="tab active">
-  <div class="card">
-    <h2>山城市へようこそ</h2>
+  <div class="hero">
+    <h2>山城市</h2>
     <div class="time" id="time"></div>
   </div>
 
@@ -157,7 +180,8 @@ const NEWS_UPDATED="2026-05-10 12:00";
   </div>
 
   <div class="card">
-    <button class="main" onclick="location.href='https://sites.google.com/view/yamashiro-city'">
+    <button class="main-btn"
+      onclick="location.href='https://sites.google.com/view/yamashiro-city'">
       山城市ホームページへ
     </button>
   </div>
@@ -165,65 +189,62 @@ const NEWS_UPDATED="2026-05-10 12:00";
 
 <section id="login" class="tab">
   <div class="card">
-    <h2>ログイン</h2>
-    <input id="pw" placeholder="パスワード">
+    <h3>ログイン</h3>
+    <input id="pw" placeholder="パスワード"
+      style="width:100%;padding:14px;border-radius:14px;border:none;background:#eef1f6">
     <br><br>
-    <button class="main" onclick="login()">ログイン</button>
+    <button class="main-btn" onclick="login()">ログイン</button>
   </div>
 </section>
 
 <section id="pay" class="tab">
   <div class="card">
-    <h2>ヤマPay</h2>
+    <h3>ヤマPay</h3>
     <p>現在準備中です。公開をお楽しみに！</p>
   </div>
 </section>
 
 <section id="setting" class="tab">
   <div class="card">
-    <h2>設定</h2>
-
-    <div class="toggle">
-      <span>ダークモード</span>
-      <button onclick="toggleDark()">切替</button>
-    </div>
-
-    <div class="toggle">
-      <span>通知</span>
-      <button onclick="Notification.requestPermission()">許可</button>
-    </div>
-
+    <h3>設定</h3>
+    <p>通知：<button onclick="Notification.requestPermission()">許可</button></p>
     <p>最新バージョン：1.02</p>
   </div>
 </section>
 
 <section id="music" class="tab">
   <div class="card">
-    <h2>Music</h2>
-    <button class="main" onclick="location.href='https://audius.co/yuuuuuuuuuuum'">
-      音楽ページへ
-    </button>
+    <h3>Music</h3>
+    <iframe src="https://audius.co/yuuuuuuuuuuum"></iframe>
   </div>
 </section>
 
 </main>
 
 <nav id="nav" class="hidden">
-  <button onclick="show('home',this)" class="active">ホーム</button>
-  <button onclick="show('login',this)">ログイン</button>
-  <button onclick="show('pay',this)">ヤマPay</button>
-  <button onclick="show('setting',this)">設定</button>
-  <button onclick="show('music',this)">Music</button>
+  <button class="active" onclick="show('home',this)"><span>🏠</span>ホーム</button>
+  <button onclick="show('login',this)"><span>🔑</span>ログイン</button>
+  <button onclick="show('pay',this)"><span>💳</span>ヤマPay</button>
+  <button onclick="show('setting',this)"><span>⚙️</span>設定</button>
+  <button onclick="show('music',this)"><span>🎵</span>Music</button>
 </nav>
 
 <script>
-setTimeout(()=>{
-  document.getElementById("splash").style.display="none";
-  document.getElementById("app").classList.remove("hidden");
-  document.getElementById("nav").classList.remove("hidden");
-  document.getElementById("news").innerText=NEWS_TEXT;
-  document.getElementById("newsTime").innerText=NEWS_UPDATED;
-},1800);
+const isStandalone =
+  window.matchMedia('(display-mode: standalone)').matches ||
+  window.navigator.standalone === true;
+
+if(!isStandalone){
+  document.getElementById("block").classList.remove("hidden");
+}else{
+  setTimeout(()=>{
+    document.getElementById("splash").style.display="none";
+    document.getElementById("app").classList.remove("hidden");
+    document.getElementById("nav").classList.remove("hidden");
+    document.getElementById("news").innerText=NEWS_TEXT;
+    document.getElementById("newsTime").innerText=NEWS_UPDATED;
+  },1800);
+}
 
 function show(id,btn){
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
@@ -231,7 +252,7 @@ function show(id,btn){
   document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
 }
-function toggleDark(){document.body.classList.toggle("dark")}
+
 function login(){
   const p=document.getElementById("pw").value;
   const m={
@@ -242,7 +263,11 @@ function login(){
   if(m[p])location.href=m[p];
   else alert("パスワードが違います");
 }
-setInterval(()=>{document.getElementById("time").innerText=new Date().toLocaleTimeString()},1000);
+
+setInterval(()=>{
+  document.getElementById("time").innerText=
+    new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
+},1000);
 </script>
 
 </body>
