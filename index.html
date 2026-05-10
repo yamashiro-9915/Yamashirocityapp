@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>山城市</title>
 
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+<link rel="icon" sizes="512x512" href="icon-512.png">
 
 <style>
-/* ========= 共通 ========= */
+/* ===== 基本 ===== */
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display";
@@ -18,26 +18,20 @@ body{
 }
 .hidden{display:none}
 
-/* ========= ブラウザ遮断 ========= */
-#block{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  padding:24px;
-  background:#fff;
-}
-#block h2{
-  font-size:22px;
-}
-#block p{
-  color:#555;
-  margin-top:12px;
+/* ===== PC非対応 ===== */
+@media (min-width:768px){
+  body *{display:none}
+  body::before{
+    content:"このアプリはスマートフォン専用です";
+    display:flex;
+    height:100vh;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+  }
 }
 
-/* ========= スプラッシュ ========= */
+/* ===== スプラッシュ ===== */
 #splash{
   position:fixed;
   inset:0;
@@ -45,11 +39,11 @@ body{
   align-items:center;
   justify-content:center;
   background:#fff;
-  z-index:1000;
+  z-index:999;
 }
 #splash h1{
   font-size:42px;
-  background:linear-gradient(90deg,#007aff,#4aa3ff);
+  background:linear-gradient(90deg,#007aff,#5ac8fa);
   -webkit-background-clip:text;
   color:transparent;
   animation:zoom 1.8s ease forwards;
@@ -59,82 +53,87 @@ body{
   to{transform:scale(1.6);opacity:1}
 }
 
-/* ========= メイン ========= */
-main{
-  padding:20px 16px 120px;
+/* ===== ブラウザ案内 ===== */
+#install{
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:24px;
+  background:#fff;
 }
+
+/* ===== アプリ ===== */
+main{padding:20px 16px 120px}
 .tab{display:none}
 .tab.active{display:block}
 
-/* ========= カード ========= */
+/* ===== ガラスカード ===== */
 .card{
   background:rgba(255,255,255,0.85);
-  border-radius:20px;
+  backdrop-filter:blur(18px);
+  border-radius:22px;
   padding:18px;
   margin-bottom:18px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.06);
 }
 
-/* ========= ホーム ========= */
+/* ===== ヒーロー ===== */
 .hero{
-  padding:28px 18px;
-  border-radius:24px;
   background:linear-gradient(135deg,#007aff,#5ac8fa);
   color:#fff;
-  margin-bottom:22px;
-}
-.hero h2{
-  margin:0;
-  font-size:26px;
+  border-radius:26px;
+  padding:28px;
 }
 .time{
   font-size:34px;
+  margin-top:8px;
   font-weight:600;
-  margin-top:10px;
 }
 
-/* ========= ボタン ========= */
-.main-btn{
-  width:100%;
-  padding:16px;
-  border-radius:18px;
-  border:none;
-  background:#007aff;
-  color:#fff;
-  font-size:16px;
-}
-
-/* ========= タブバー（ANA風） ========= */
+/* ===== タブバー（ANA風） ===== */
 nav{
   position:fixed;
   bottom:0;left:0;right:0;
-  height:92px;
+  height:94px;
   background:rgba(255,255,255,0.9);
   backdrop-filter:blur(20px);
   display:flex;
-  box-shadow:0 -4px 12px rgba(0,0,0,0.08);
+  box-shadow:0 -6px 20px rgba(0,0,0,0.1);
 }
 nav button{
   flex:1;
-  background:none;
   border:none;
+  background:none;
   font-size:11px;
-  color:#666;
+  color:#777;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:4px;
 }
 nav button.active{
   color:#007aff;
   font-weight:600;
 }
-nav button.active span{
-  transform:translateY(-4px);
-}
 
-/* ========= iframe ========= */
+/* ===== 入力 ===== */
+input{
+  width:100%;
+  padding:14px;
+  border-radius:16px;
+  border:none;
+  background:#eef1f6;
+}
+.main{
+  width:100%;
+  padding:16px;
+  border:none;
+  border-radius:18px;
+  background:#007aff;
+  color:#fff;
+}
 iframe{
   width:100%;
   height:70vh;
@@ -146,19 +145,17 @@ iframe{
 
 <body>
 
-<!-- ❌ ブラウザ用ブロック画面 -->
-<div id="block" class="hidden">
+<div id="splash"><h1>山城市</h1></div>
+
+<div id="install" class="hidden">
   <div>
-    <h2>このアプリは<br>インストール後にご利用ください</h2>
+    <h2>このアプリは<br>インストールしてご利用ください</h2>
     <p>
       iPhone：共有 → ホーム画面に追加<br>
       Android：︙ → アプリをインストール
     </p>
   </div>
 </div>
-
-<!-- スプラッシュ -->
-<div id="splash"><h1>山城市</h1></div>
 
 <main id="app" class="hidden">
 
@@ -169,18 +166,18 @@ const NEWS_UPDATED="2026-05-10 12:00";
 
 <section id="home" class="tab active">
   <div class="hero">
-    <h2>山城市</h2>
+    <h2>山城市へようこそ！</h2>
     <div class="time" id="time"></div>
   </div>
 
   <div class="card">
-    <h3>お知らせ</h3>
+    <h3>山城市からのお知らせ</h3>
     <p id="news"></p>
     <small>最終更新：<span id="newsTime"></span></small>
   </div>
 
   <div class="card">
-    <button class="main-btn"
+    <button class="main"
       onclick="location.href='https://sites.google.com/view/yamashiro-city'">
       山城市ホームページへ
     </button>
@@ -190,10 +187,9 @@ const NEWS_UPDATED="2026-05-10 12:00";
 <section id="login" class="tab">
   <div class="card">
     <h3>ログイン</h3>
-    <input id="pw" placeholder="パスワード"
-      style="width:100%;padding:14px;border-radius:14px;border:none;background:#eef1f6">
+    <input id="pw" placeholder="パスワード">
     <br><br>
-    <button class="main-btn" onclick="login()">ログイン</button>
+    <button class="main" onclick="login()">ログイン</button>
   </div>
 </section>
 
@@ -207,6 +203,7 @@ const NEWS_UPDATED="2026-05-10 12:00";
 <section id="setting" class="tab">
   <div class="card">
     <h3>設定</h3>
+    <button onclick="document.body.classList.toggle('dark')">ダークモード</button>
     <p>通知：<button onclick="Notification.requestPermission()">許可</button></p>
     <p>最新バージョン：1.02</p>
   </div>
@@ -222,29 +219,29 @@ const NEWS_UPDATED="2026-05-10 12:00";
 </main>
 
 <nav id="nav" class="hidden">
-  <button class="active" onclick="show('home',this)"><span>🏠</span>ホーム</button>
-  <button onclick="show('login',this)"><span>🔑</span>ログイン</button>
-  <button onclick="show('pay',this)"><span>💳</span>ヤマPay</button>
-  <button onclick="show('setting',this)"><span>⚙️</span>設定</button>
-  <button onclick="show('music',this)"><span>🎵</span>Music</button>
+  <button class="active" onclick="show('home',this)">ホーム</button>
+  <button onclick="show('login',this)">ログイン</button>
+  <button onclick="show('pay',this)">ヤマPay</button>
+  <button onclick="show('setting',this)">設定</button>
+  <button onclick="show('music',this)">Music</button>
 </nav>
 
 <script>
-const isStandalone =
+const isPWA =
   window.matchMedia('(display-mode: standalone)').matches ||
   window.navigator.standalone === true;
 
-if(!isStandalone){
-  document.getElementById("block").classList.remove("hidden");
-}else{
-  setTimeout(()=>{
-    document.getElementById("splash").style.display="none";
+setTimeout(()=>{
+  document.getElementById("splash").style.display="none";
+  if(!isPWA){
+    document.getElementById("install").classList.remove("hidden");
+  }else{
     document.getElementById("app").classList.remove("hidden");
     document.getElementById("nav").classList.remove("hidden");
     document.getElementById("news").innerText=NEWS_TEXT;
     document.getElementById("newsTime").innerText=NEWS_UPDATED;
-  },1800);
-}
+  }
+},1800);
 
 function show(id,btn){
   document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
@@ -255,12 +252,12 @@ function show(id,btn){
 
 function login(){
   const p=document.getElementById("pw").value;
-  const m={
+  const map={
     kaori:"https://sites.google.com/view/yamashiro-city/%E4%BA%BA%E5%88%A5/kaori",
     daiki:"https://sites.google.com/view/yamashiro-city/%E4%BA%BA%E5%88%A5/daiki",
     nanami:"https://sites.google.com/view/yamashiro-city/%E4%BA%BA%E5%88%A5/nanami"
   };
-  if(m[p])location.href=m[p];
+  if(map[p])location.href=map[p];
   else alert("パスワードが違います");
 }
 
