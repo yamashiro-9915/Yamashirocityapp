@@ -1,163 +1,213 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>山城市公式アプリ</title>
     
-    <!-- PWA Settings -->
+    <!-- PWA設定 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="山城市">
     <link rel="apple-touch-icon" href="icon-192.png">
-    <link rel="manifest" href="data:application/manifest+json,{'name':'山城市','short_name':'山城市','display':'standalone','start_url':'.','background_color':'#ffffff','theme_color':'#000000','icons':[{'src':'icon-192.png','sizes':'192x192','type':'image/png'},{'src':'icon-512.png','sizes':'512x512','type':'image/png'}]}">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- お知らせ・更新設定 (ここを編集してください) --- */
         :root {
-            --news-text: "【重要】山城市コンテンツ拡大のお知らせ！（山城市公式アプリ・Yamashiro music）";
-            --last-update: "2026/05/10 18:00";
-            --glass-bg: rgba(255, 255, 255, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #000;
             --accent-color: #007AFF;
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --safe-area-bottom: env(safe-area-inset-bottom);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
-            background-attachment: fixed;
-            height: 100vh;
+        [data-theme="dark"] {
+            --glass-bg: rgba(0, 0, 0, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #fff;
+            --bg-gradient: linear-gradient(135deg, #2c3e50 0%, #000000 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
             overflow: hidden;
-            color: #333;
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            transition: background 0.5s ease;
         }
 
-        /* --- スプラッシュ画面 --- */
-        #splash {
+        /* --- 編集エリア：お知らせ設定 --- */
+        #news-content::before { content: "2026年度 市民文化祭の開催が決定しました！"; }
+        #last-updated::before { content: "2026/05/10 18:00"; }
+        /* ---------------------------- */
+
+        /* スプラッシュ画面 */
+        #splash-screen {
             position: fixed;
             inset: 0;
             background: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
+            z-index: 10000;
             transition: opacity 0.8s ease;
         }
+
         .splash-logo {
-            font-size: 2rem;
-            font-weight: bold;
+            font-size: 3rem;
+            font-weight: 900;
             background: linear-gradient(45deg, #007AFF, #00C6FF);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: grow 2s forwards ease-in-out;
-        }
-        @keyframes grow {
-            0% { transform: scale(0.5); opacity: 0; }
-            50% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1.5); opacity: 0; }
+            animation: zoomIn 1.5s forwards ease-out;
         }
 
-        /* --- ブラウザ用誘導画面 --- */
-        #browser-guide {
+        @keyframes zoomIn {
+            0% { transform: scale(0.1); opacity: 0; }
+            100% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* PWA誘導画面（ブラウザ表示時） */
+        #pwa-guide {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(255,255,255,0.95);
+            background: white;
             z-index: 9000;
             padding: 40px 20px;
             text-align: center;
+            overflow-y: auto;
+            color: #333;
         }
+
         .guide-card {
-            background: white;
-            padding: 20px;
+            background: #f2f2f7;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        /* --- メインアプリ画面 --- */
-        #app-shell {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            padding-top: env(safe-area-inset-top);
-        }
-
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 25px;
-            margin: 15px;
             padding: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        /* PC非対応表示 */
+        @media (min-width: 1024px) {
+            body::after {
+                content: "このアプリはスマートフォン専用です。モバイルデバイスで開いてください。";
+                position: fixed; inset: 0; background: #000; color: #fff;
+                display: flex; justify-content: center; align-items: center; z-index: 11000;
+            }
+        }
+
+        /* メインUI構造 */
+        .app-container {
+            display: none;
+            height: 100vh;
+            flex-direction: column;
+            padding-top: env(safe-area-inset-top);
         }
 
         .content-area {
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 100px;
+            padding: 20px;
+            padding-bottom: 120px;
         }
 
-        .tab-content { display: none; animation: fadeIn 0.4s ease; }
-        .tab-content.active { display: block; }
+        .page { display: none; animation: fadeIn 0.3s; }
+        .active-page { display: block; }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- ナビゲーション (ANA風) --- */
+        /* グラスモーフィズムカード */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        /* ANA風タブバー */
         .tab-bar {
             position: fixed;
-            bottom: 30px;
+            bottom: 20px;
             left: 20px;
             right: 20px;
             height: 70px;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: 35px;
             display: flex;
             justify-content: space-around;
             align-items: center;
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            z-index: 8000;
+            padding-bottom: calc(var(--safe-area-bottom) / 2);
         }
-        .tab-item {
-            text-align: center;
-            color: #666;
-            font-size: 10px;
-            flex: 1;
-        }
-        .tab-item.active { color: var(--accent-color); font-weight: bold; }
-        .tab-icon { font-size: 20px; display: block; margin-bottom: 2px; }
 
-        /* --- パーツ別スタイル --- */
-        input {
+        [data-theme="dark"] .tab-bar {
+            background: rgba(30, 30, 30, 0.8);
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            color: #8e8e93;
+            text-decoration: none;
+        }
+
+        .tab-item.active {
+            color: var(--accent-color);
+        }
+
+        .tab-icon { font-size: 24px; margin-bottom: 2px; }
+
+        /* 入力UI */
+        input[type="password"], select {
             width: 100%;
             padding: 12px;
             border-radius: 12px;
-            border: none;
+            border: 1px solid var(--glass-border);
             background: rgba(255,255,255,0.5);
-            margin-bottom: 10px;
+            margin: 10px 0;
         }
+
         .btn {
             background: var(--accent-color);
             color: white;
-            padding: 12px;
-            border-radius: 12px;
-            text-align: center;
-            text-decoration: none;
-            display: block;
             border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            width: 100%;
             font-weight: bold;
         }
 
-        /* --- 通知ポップアップ --- */
+        /* 通知ダイアログ */
         #notification-prompt {
             position: fixed;
-            top: 50%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
             width: 80%;
-            z-index: 10000;
+            z-index: 10001;
+            text-align: center;
             display: none;
         }
     </style>
@@ -165,168 +215,221 @@
 <body>
 
     <!-- スプラッシュ画面 -->
-    <div id="splash">
+    <div id="splash-screen">
         <div class="splash-logo">山城市</div>
     </div>
 
-    <!-- 誘導画面 -->
-    <div id="browser-guide">
+    <!-- PWA誘導画面 -->
+    <div id="pwa-guide">
+        <h2>山城市アプリをインストール</h2>
+        <p>このアプリはブラウザでは制限があります。ホーム画面に追加してご利用ください。</p>
+        
         <div class="guide-card">
-            <h2>アプリとしてインストール</h2>
-            <p style="margin: 15px 0;">山城市公式アプリをホーム画面に追加してください。</p>
-            <div id="ios-inst" style="display:none;">
-                <p>1. 下の共有ボタン <img src="https://img.icons8.com/ios/20/007AFF/share.png"> をタップ</p>
-                <p>2. 「ホーム画面に追加」を選択</p>
-            </div>
-            <div id="android-inst" style="display:none;">
-                <p>1. 右上のメニューをタップ</p>
-                <p>2. 「アプリをインストール」を選択</p>
-            </div>
+            <strong>iPhoneの場合</strong>
+            <p>1. 下の共有ボタン(↑)をタップ</p>
+            <p>2. 「ホーム画面に追加」を選択</p>
+        </div>
+
+        <div class="guide-card">
+            <strong>Androidの場合</strong>
+            <p>1. 右上のメニュー(⋮)をタップ</p>
+            <p>2. 「アプリをインストール」を選択</p>
         </div>
     </div>
 
     <!-- 通知許可プロンプト -->
-    <div id="notification-prompt" class="glass-panel" style="text-align: center; background: white;">
+    <div id="notification-prompt" class="glass-card">
         <h3>通知の許可</h3>
-        <p style="font-size: 14px; margin: 10px 0;">山城市から毎日の名言や重要なお知らせをお届けします。</p>
-        <button class="btn" onclick="closeNotification()">許可する</button>
+        <p>山城市から毎日の名言をお届けします。通知を許可しますか？</p>
+        <button class="btn" onclick="allowNotification()">許可する</button>
+        <p onclick="closeNotificationPrompt()" style="margin-top:15px; font-size:14px; opacity:0.7;">あとで</p>
     </div>
 
-    <!-- メインアプリ -->
-    <div id="app-shell">
+    <!-- メインコンテンツ -->
+    <div class="app-container" id="app-main">
         <div class="content-area">
             
             <!-- 1. ホーム -->
-            <div id="tab-home" class="tab-content active">
-                <div class="glass-panel">
-                    <h1 style="font-size: 1.5rem;">山城市へようこそ！</h1>
-                    <p id="clock" style="font-size: 1.2rem; margin: 10px 0; font-weight: 200;"></p>
+            <div id="page-home" class="page active-page">
+                <h1 style="font-weight: 900;">山城市へようこそ！</h1>
+                <div class="glass-card">
+                    <div id="clock" style="font-size: 1.5rem; font-weight: bold;">00:00:00</div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">現在の時刻</div>
                 </div>
-                <div class="glass-panel">
+
+                <div class="glass-card">
                     <h3>📢 山城市からのお知らせ</h3>
-                    <p id="news-box" style="margin: 10px 0; line-height: 1.5;"></p>
-                    <p style="font-size: 10px; color: #777;">最終更新: <span id="update-time"></span></p>
+                    <p id="news-content"></p>
+                    <hr style="border:0; border-top:1px solid var(--glass-border);">
+                    <small>最終更新: <span id="last-updated"></span></small>
                 </div>
-                <div style="padding: 0 15px;">
-                    <a href="https://sites.google.com/view/yamashiro-city" class="btn">山城市公式HPへ移動</a>
-                </div>
+
+                <button class="btn" onclick="location.href='https://sites.google.com/view/yamashiro-city'">
+                    山城市ホームページへ
+                </button>
             </div>
 
             <!-- 2. ログイン -->
-            <div id="tab-login" class="tab-content">
-                <div class="glass-panel">
-                    <h2>市民ログイン</h2>
-                    <p style="font-size: 12px; margin-bottom: 15px;">割り当てられたパスワードを入力してください</p>
-                    <input type="password" id="pass-input" placeholder="Password...">
-                    <button class="btn" style="width: 100%;" onclick="checkLogin()">ログイン</button>
+            <div id="page-login" class="page">
+                <h2>住民用ログイン</h2>
+                <div class="glass-card">
+                    <p>パスワードを入力してください</p>
+                    <input type="password" id="pass-input" placeholder="Password">
+                    <button class="btn" onclick="checkLogin()">ログイン</button>
                 </div>
             </div>
 
             <!-- 3. ヤマPay -->
-            <div id="tab-pay" class="tab-content">
-                <div class="glass-panel" style="text-align: center; padding: 50px 20px;">
-                    <div style="font-size: 50px;">💳</div>
-                    <h2>ヤマPay</h2>
+            <div id="page-pay" class="page">
+                <h2>ヤマPay</h2>
+                <div class="glass-card" style="text-align: center; padding: 50px 20px;">
+                    <div style="font-size: 3rem;">💳</div>
                     <p>現在準備中です。<br>公開をお楽しみに！</p>
                 </div>
             </div>
 
             <!-- 4. 設定 -->
-            <div id="tab-settings" class="tab-content">
-                <div class="glass-panel">
-                    <h3>システム設定</h3>
-                    <div style="margin-top: 15px;">
-                        <p>ダークモード: 未設定</p>
-                        <p>文字サイズ: 標準</p>
-                        <p>通知設定: ON</p>
-                        <hr style="margin: 10px 0; opacity: 0.2;">
-                        <p>バージョン: 1.02 (最新)</p>
-                        <p style="font-size: 12px; color: #666;">アクセシビリティ対応済</p>
+            <div id="page-settings" class="page">
+                <h2>設定</h2>
+                <div class="glass-card">
+                    <p>外観モード</p>
+                    <button class="btn" style="background:#444;" onclick="toggleTheme()">ダークモード切替</button>
+                    
+                    <p>文字サイズ</p>
+                    <select onchange="document.body.style.fontSize = this.value">
+                        <option value="16px">標準</option>
+                        <option value="20px">大きく</option>
+                        <option value="14px">小さく</option>
+                    </select>
+
+                    <p>アクセシビリティ</p>
+                    <button class="btn" style="background:#666;" onclick="alert('読み上げ機能をオンにしました(モック)')">視覚障害者用モード</button>
+
+                    <hr style="margin: 20px 0; border: 0.5px solid var(--glass-border);">
+                    <p>アプリ情報</p>
+                    <div style="display:flex; justify-content:space-between; font-size:14px;">
+                        <span>バージョン</span>
+                        <span>1.02</span>
                     </div>
+                    <button class="btn" style="margin-top:10px;" onclick="alert('最新バージョンです')">アップデートを確認</button>
                 </div>
             </div>
 
+            <!-- 5. Music (このタブはクリックで外部へ飛ぶように設定) -->
         </div>
 
-        <!-- ANA風タブバー -->
+        <!-- タブバー -->
         <nav class="tab-bar">
-            <div class="tab-item active" onclick="switchTab('home')"><span class="tab-icon">🏠</span>ホーム</div>
-            <div class="tab-item" onclick="switchTab('login')"><span class="tab-icon">👤</span>ログイン</div>
-            <div class="tab-item" onclick="switchTab('pay')"><span class="tab-icon">🪙</span>ヤマPay</div>
-            <div class="tab-item" onclick="switchTab('settings')"><span class="tab-icon">⚙️</span>設定</div>
-            <div class="tab-item" onclick="window.location.href='https://audius.co/yuuuuuuuuuuum'"><span class="tab-icon">🎵</span>Music</div>
+            <a href="javascript:void(0)" class="tab-item active" onclick="switchTab('home', this)">
+                <span class="tab-icon">🏠</span>
+                <span>ホーム</span>
+            </a>
+            <a href="javascript:void(0)" class="tab-item" onclick="switchTab('login', this)">
+                <span class="tab-icon">🔑</span>
+                <span>ログイン</span>
+            </a>
+            <a href="javascript:void(0)" class="tab-item" onclick="switchTab('pay', this)">
+                <span class="tab-icon">💰</span>
+                <span>ヤマPay</span>
+            </a>
+            <a href="javascript:void(0)" class="tab-item" onclick="switchTab('settings', this)">
+                <span class="tab-icon">⚙️</span>
+                <span>設定</span>
+            </a>
+            <a href="https://audius.co/yuuuuuuuuuuum" target="_blank" class="tab-item">
+                <span class="tab-icon">🎵</span>
+                <span>Music</span>
+            </a>
         </nav>
     </div>
 
     <script>
-        // --- 初期化処理 ---
+        // PWA判定: スタンドアロン（アプリ形式）で開いているか確認
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
         window.onload = () => {
-            // スプラッシュ画面の制御
             setTimeout(() => {
-                document.getElementById('splash').style.opacity = '0';
-                setTimeout(() => document.getElementById('splash').style.display = 'none', 800);
+                document.getElementById('splash-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('splash-screen').style.display = 'none';
+                    
+                    if (isStandalone) {
+                        document.getElementById('app-main').style.display = 'flex';
+                        checkFirstVisit();
+                    } else {
+                        document.getElementById('pwa-guide').style.display = 'block';
+                    }
+                }, 800);
             }, 2000);
-
-            // ブラウザ/PWA判定
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-            if (!isStandalone && /iPhone|iPad|Android/i.test(navigator.userAgent)) {
-                document.getElementById('browser-guide').style.display = 'block';
-                if (/iPhone|iPad/i.test(navigator.userAgent)) document.getElementById('ios-inst').style.display = 'block';
-                else document.getElementById('android-inst').style.display = 'block';
-            }
-
-            // PC非対応アラート
-            if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                document.body.innerHTML = "<div style='padding:50px; text-align:center;'><h2>PC非対応です</h2><p>スマートフォンからアクセスしてください。</p></div>";
-            }
-
-            // 初回起動時の通知プロンプト
-            if (!localStorage.getItem('notified')) {
-                setTimeout(() => document.getElementById('notification-prompt').style.display = 'block', 3500);
-            }
-
-            // データ反映
-            const root = getComputedStyle(document.documentElement);
-            document.getElementById('news-box').innerText = root.getPropertyValue('--news-text').replace(/"/g, '');
-            document.getElementById('update-time').innerText = root.getPropertyValue('--last-update').replace(/"/g, '');
             
             updateClock();
             setInterval(updateClock, 1000);
         };
 
-        // --- タブ切り替え ---
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-item').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-
-        // --- 時計 ---
+        // 時計更新
         function updateClock() {
             const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('ja-JP', { hour12: false });
+            document.getElementById('clock').innerText = now.toLocaleTimeString();
         }
 
-        // --- ログイン処理 ---
+        // タブ切り替え
+        function switchTab(pageId, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById('page-' + pageId).classList.add('active-page');
+            
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // ログイン処理
         function checkLogin() {
             const pass = document.getElementById('pass-input').value;
-            const routes = {
+            const urls = {
                 'kaori': 'https://sites.google.com/view/yamashiro-city/%E4%BA%BA%E5%88%A5/kaori',
                 'daiki': 'https://sites.google.com/view/yamashiro-city/%E4%BA%BA%E5%88%A5/daiki',
                 'nanami': 'https://sites.google.com/view/yamashiro-city/%E4%BA%BA%E5%88%A5/nanami'
             };
-            if (routes[pass]) window.location.href = routes[pass];
-            else alert('パスワードが違います');
+
+            if (urls[pass]) {
+                location.href = urls[pass];
+            } else {
+                alert('パスワードが正しくありません');
+            }
         }
 
-        // --- 通知許可ダミー ---
-        function closeNotification() {
-            document.getElementById('notification-prompt').style.opacity = '0';
-            setTimeout(() => document.getElementById('notification-prompt').style.display = 'none', 500);
-            localStorage.setItem('notified', 'true');
-            alert('通知が許可されました。毎日の名言をお楽しみに！');
+        // テーマ切り替え
+        function toggleTheme() {
+            const body = document.body;
+            const current = body.getAttribute('data-theme');
+            body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
         }
+
+        // 通知シミュレーション
+        function checkFirstVisit() {
+            if (!localStorage.getItem('visited')) {
+                document.getElementById('notification-prompt').style.display = 'block';
+                localStorage.setItem('visited', 'true');
+            }
+        }
+
+        function allowNotification() {
+            alert('通知を許可しました。毎日山城市の名言をお届けします。');
+            closeNotificationPrompt();
+        }
+
+        function closeNotificationPrompt() {
+            document.getElementById('notification-prompt').style.display = 'none';
+        }
+
+        // 擬似的なバックグラウンド通知用（実際はServiceWorkerが必要ですが、JSで名言を出す仕組み）
+        const quotes = ["山城市の未来は、市民の笑顔で作られる。", "今日も一日、お疲れ様でした。", "深呼吸して、空を見上げよう。", "小さな幸せが、大きな喜びに。"];
+        setInterval(() => {
+            if (Math.random() < 0.1) { // ランダムなタイミング
+                const q = quotes[Math.floor(Math.random() * quotes.length)];
+                console.log("山城市通知: " + q);
+            }
+        }, 60000); 
+
     </script>
 </body>
 </html>
